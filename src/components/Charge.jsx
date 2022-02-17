@@ -15,40 +15,38 @@ const Charge = () => {
 
   const { data: dataset, isFetching } = useGetDataQuery()
 
-  if (isFetching) return ""
+  useEffect(() => {
+    if (isFetching) return ""
 
-  const getRole = () => {
-    const length = Object.keys(dataset).length
-    let role = []
+    const getRole = () => {
+      const length = Object.keys(dataset).length
+      let role = []
 
-    for (let i = 0; i < length; i++) {
-      if (role.indexOf(dataset[i].role) === -1)
-        role.push(dataset[i].role)
+      for (let i = 0; i < length; i++) {
+        if (role.indexOf(dataset[i].role) === -1 && dataset[i].role !== "")
+          role.push(dataset[i].role)
+      }
+
+      return role
     }
 
-    return role
-  }
+    const createShift = (role) => {
+      let shift = role
+      console.log(shift)
 
-  const createShift = (role) => {
-    let shift = []
+      return shift
+    }
 
-    role.forEach((item, index) =>  {
-      for (let i = 700; i < 1915; i+= 15) {
-        shift[role].push(i)
-      }
-    })
-    return shift
-  }
+    const createData = () => {
+      const role = getRole()
+      const shift = createShift(role)
+      setIsLoading(false)
+      setData(shift)
+      console.log(data)
+    }
 
-  const createData = () => {
-    const role = getRole()
-    const shift = createShift(role)
-    setIsLoading(false)
-    setData(shift)
-    console.log(data)
-  }
-
-  createData()
+    createData()
+  }, [isFetching])
 
   return (
     <>
