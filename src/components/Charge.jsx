@@ -38,7 +38,7 @@ const Charge = () => {
         console.log(tmpData)
         if (j % 100 !== 0 && j % 100 !== 15 && j % 100 !== 30 && j % 100 !== 45) {
           tmpData[`${dataset[i].role}`][`${(j - j % 100).toString()}`] = 15 - (j % 100)
-          charge -= 15 - (j % 100)
+          charge -= 15 - (j - j % 100)
           j += 15 - (j % 100)
         }
         while (charge > 0) {
@@ -47,23 +47,6 @@ const Charge = () => {
           j += (j % 100 >= 45) ? 55 : 15
         }
       }
-      // for (let i = 0; i < length; i++) {
-      //   if (dataset[i].role === "Deficit")
-      //     continue;
-      //   let charge = dataset[i].chrg;
-      //   let j = parseInt(dataset[i].from)
-      //   console.log(tmpData)
-      //   if (j % 100 !== 0 && j % 100 !== 15 && j % 100 !== 30 && j % 100 !== 45) {
-      //     tmpData[`${dataset[i].role}`][`${(j - j % 100).toString()}`] = 15 - (j % 100)
-      //     charge -= 15 - (j % 100)
-      //     j += 15 - (j % 100)
-      //   }
-      //   while (charge > 0) {
-      //     tmpData[`${dataset[i].role}`][`${j.toString()}`] = charge > 15 ? 15 : charge
-      //     charge -= charge > 15 ? 15 : charge
-      //     j += (j % 100 >= 45) ? 55 : 15
-      //   }
-      // }
       console.log(tmpData)
       setData(tmpData)
     }
