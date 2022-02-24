@@ -11,41 +11,33 @@ const Charge = () => {
   const [filter, setFilter] = useState(undefined)
   const [visual, setVisual] = useState("Charge/Capacite")
   const [data, setData] = useState(undefined)
-  const [isLoading, setIsLoading] = useState(true)
 
   const { data: dataset, isFetching } = useGetDataQuery()
 
   useEffect(() => {
-    if (isFetching) return ""
-
-    const getRole = () => {
-      const length = Object.keys(dataset).length
-      let role = []
-
-      for (let i = 0; i < length; i++) {
-        if (role.indexOf(dataset[i].role) === -1 && dataset[i].role !== "")
-          role.push(dataset[i].role)
-      }
-
-      return role
-    }
-
-    const createShift = (role) => {
-      let shift = role
-      console.log(shift)
-
-      return shift
-    }
 
     const createData = () => {
-      const role = getRole()
-      const shift = createShift(role)
-      setIsLoading(false)
-      setData(shift)
-      console.log(data)
+      const length = Object.keys(dataset).length
+      let tmpData = []
+      let shift = {}
+
+      for (let i = 700; i < 2100; i += 15) {
+        if (i % 100 > 45) {
+          i += 25
+          continue
+        }
+        shift[`${i.toString()}`] = 0
+      }
+      for (let i = 0; i < length; i++) {
+        if (tmpData.indexOf(dataset[i].role) === -1 && dataset[i].role !== "") {
+          tmpData[`${dataset[i].role}`] = shift
+        }
+      }
+      setData(tmpData)
     }
 
-    createData()
+    if (!isFetching)
+      createData()
   }, [isFetching])
 
   return (
