@@ -15,9 +15,7 @@ const Charge = () => {
   const { data: dataset, isFetching } = useGetDataQuery()
 
   useEffect(() => {
-    const createData = () => {
-      const length = Object.keys(dataset).length
-      let tmpData = []
+    const createShift = (name) => {
       let shift = {}
 
       for (let i = 700; i < 2100; i += 15) {
@@ -25,24 +23,28 @@ const Charge = () => {
           i += 25
           continue
         }
-        shift[`${i.toString()}`] = 0
+        shift[`${i.toString()}`] = name === 0 ? 0 : 39000
       }
+      return (shift)
+    }
+
+    const createData = () => {
+      const length = Object.keys(dataset).length
+      let tmpData = []
+
       for (let i = 0; i < length; i++) {
-        if (dataset[i].role === "Deficit")
-          continue;
-        if (tmpData.indexOf(dataset[i].role) === -1 && dataset[i].role !== "") {
-          tmpData[`${dataset[i].role}`] = shift
+        if (tmpData.indexOf(dataset[i].cid) === -1) {
+          tmpData[`${dataset[i].cid}`] = createShift(dataset[i].cid)
         }
-        let charge = dataset[i].chrg;
+        let charge = dataset[i].cid === 0 ? dataset[i].chrg * -1 : dataset[i].chrg;
         let j = parseInt(dataset[i].from)
-        console.log(tmpData)
         if (j % 100 !== 0 && j % 100 !== 15 && j % 100 !== 30 && j % 100 !== 45) {
-          tmpData[`${dataset[i].role}`][`${(j - j % 100).toString()}`] = 15 - (j % 100)
-          charge -= 15 - (j - j % 100)
-          j += 15 - (j % 100)
+          tmpData[`${dataset[i].cid}`][`${(j - ((j % 100) % 15)).toString()}`] -= charge > (j % 100) % 15 ? 15 : (15 - ((j % 100) % 15)) / 15
+          charge -= 15 - ((j % 100) % 15)
+          j += 15 - ((j % 100) % 15)
         }
         while (charge > 0) {
-          tmpData[`${dataset[i].role}`][`${j.toString()}`] = charge > 15 ? 15 : charge
+          tmpData[`${dataset[i].cid}`][`${j.toString()}`] -= charge > 15 ? 15 : charge
           charge -= charge > 15 ? 15 : charge
           j += (j % 100 >= 45) ? 55 : 15
         }
@@ -51,8 +53,12 @@ const Charge = () => {
       setData(tmpData)
     }
 
-    if (!isFetching)
+    if (!isFetching) {
+      var startTime = performance.now()
       createData()
+      var endTime = performance.now()
+      console.log(endTime - startTime)
+    }
   }, [isFetching])
 
   return (
