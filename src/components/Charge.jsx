@@ -14,16 +14,32 @@ const Charge = () => {
 
   const { data: dataset, isFetching } = useGetDataQuery()
 
+  const tmpData = [
+    {cid: 1, start: 700, end: 1900},
+    {cid: 1, start: 700, end: 1900},
+    {cid: 2, start: 700, end: 1700}
+  ]
+
   useEffect(() => {
     const createShift = (name) => {
       let shift = {}
+      const length = Object.keys(tmpData).length
 
-      for (let i = 700; i < 2100; i += 15) {
+      for (let i = 0; i < 2400; i += 15) {
         if (i % 100 > 45) {
           i += 25
           continue
         }
-        shift[`${i.toString()}`] = name === 0 ? 0 : 39000
+        if (name === 0) {
+          shift[`${i.toString()}`] = 0
+          continue
+        }
+        for (let y = 0; y < length; y++) {
+          if (tmpData[y]['cid'] === name && (i >= tmpData[y]["start"] && i <= tmpData[y]["end"])) {
+            shift[`${i.toString()}`] = 39000
+            break;
+          }
+        }
       }
       return (shift)
     }
